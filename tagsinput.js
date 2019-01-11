@@ -29,7 +29,7 @@
       delimiterRegex: null,
       cancelConfirmKeysOnEmpty: false,
       onTagExists: function(item, $tag) {
-        $tag.addClass('sr-only');
+        //$tag.addClass('sr-only');
       },
       trimValue: false,
       allowDuplicates: false,
@@ -70,7 +70,7 @@
        */
       add: function(item, dontPushVal, options) {
         var self = this;
-  
+  debugger;
         if (self.options.maxTags && self.itemsArray.length >= self.options.maxTags)
           return;
   
@@ -95,6 +95,9 @@
         if (self.isSelect && !self.multiple && self.itemsArray.length > 0)
           self.remove(self.itemsArray[0]);
   
+          if (self.objectItems && typeof item === "string"){
+            item = { value:item,text:item };
+          }
         if (typeof item === "string" && this.$element[0].tagName === 'INPUT') {
           var delimiter = (self.options.delimiterRegex) ? self.options.delimiterRegex : self.options.delimiter;
           var items = item.split(delimiter);
@@ -272,9 +275,9 @@
       pushVal: function() {
         var self = this,
             val = $.map(self.items(), function(item) {
-              return self.options.itemValue(item) ? self.options.itemValue(item).toString() : item;
+              return self.options.itemValue(item).toString();
             });
-  
+
         self.$element.val( val.join(self.options.delimiter) );
   
         if (self.options.triggerChange)
@@ -478,7 +481,7 @@
               // Only attempt to add a tag if there is data in the field
               if (text.length !== 0) {
                  self.add(maxLengthReached ? text.substr(0, self.options.maxChars) : text);
-                 $input.val('');
+                 self.$input.val('');
               }
   
               // If the field is empty, let the event triggered fire as usual
