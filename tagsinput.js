@@ -272,7 +272,7 @@
       pushVal: function() {
         var self = this,
             val = $.map(self.items(), function(item) {
-              return self.options.itemValue(item).toString();
+              return self.options.itemValue(item) ? self.options.itemValue(item).toString() : item;
             });
   
         self.$element.val( val.join(self.options.delimiter) );
@@ -289,8 +289,8 @@
   
         self.options = $.extend({}, defaultOptions, options);
         // When itemValue is set, freeInput should always be false
-        if (self.objectItems)
-          self.options.freeInput = false;
+        // if (self.objectItems)
+        //   self.options.freeInput = false;
   
         makeOptionItemFunction(self.options, 'itemValue');
         makeOptionItemFunction(self.options, 'itemText');
