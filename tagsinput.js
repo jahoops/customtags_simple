@@ -9,7 +9,7 @@
   var defaultOptions = {
     tagClass: function(item) {
       var defaultClasses = 'badge badge-info';
-      defaultClasses += item.JSON.classlist ? item.JSON.classlist : 'bg-gray';
+      defaultClasses += item.JSON.classlist ? item.JSON.classlist : ' bg-gray';
       return defaultClasses;
     },
     focusClass: 'focus',
@@ -101,7 +101,7 @@
           var inlineColorIndex = item.indexOf('.');
           var color = 'bg-gray'; //default
           if(inlineColorIndex>-1){
-            var legalColorArray = ["red","green","blue", "black","brown","purple"];
+            var legalColorArray = ["red","green","blue","black","brown","purple"];
             var inlineColor = item.slice(inlineColorIndex + 1);
             if(legalColorArray.indexOf(inlineColor)>-1) {
               color = 'bg-' + inlineColor;
@@ -713,7 +713,7 @@ function tagsinputLoad(element, items) {
   });
   for(var i=0; i<items.length; i++) {
     var item = items[i];
-    elt.tagsinput('add', { "value": item.ID , "text": item.Title, "classlist": item.JSON.classlist });
+    elt.tagsinput('add', item);
   }
 }
 

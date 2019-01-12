@@ -69,3 +69,28 @@
 .bootstrap-tagsinput .badge [data-role="remove"]:hover:active {
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
+
+.bg-red {
+  background-color: red;
+}
+.bg-brown {
+  background-color: brown;
+}
+.bg-purple {
+  background-color: purple;
+}
+.bg-green {
+  background-color: green;
+}
+.bg-black {
+  background-color: black;
+}
+.bg-blue {
+  background-color: blue;
+}
+.bg-gray {
+  background-color: gray;
+}
+.bg-orange {
+  background-color: orange;
+}

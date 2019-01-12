@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 
@@ -10,37 +9,32 @@
 </head>
 
 <body>
-
-
-    <div>
-        <input />
+    <div class="row w-100" id='main'>
+        <div class="d-flex flex-wrap col-6" id="ticketlist">
+        </div>
+        <div class="d-flex flex-wrap col-6" id="ruleside">
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+    <script src="ticketdata.js" type="text/javascript"></script>
     <script src="tagsinput.js" type="text/javascript"></script>
     <script>
-        $(function() {
-            var elt = $('input');
-            elt.tagsinput({
-                tagClass: function(item) {
-                    switch (item.continent) {
-                        case 'Europe'   : return 'badge-purple blockquote-reverse';
-                        case 'America'  : return 'badge-danger';
-                        case 'Australia': return 'badge-red badge-important';
-                        case 'Africa'   : return 'badge-blue text-capitalize';
-                        default : return 'badge-primary';
-                    }
-                },
-                itemValue: 'value',
-                itemText: 'text'
-            });
-            elt.tagsinput('add', { "value": 1 , "text": "Amsterdam"   , "continent": "Europe"    });
-            elt.tagsinput('add', { "value": 4 , "text": "Washington"  , "continent": "America"   });
-            elt.tagsinput('add', { "value": 7 , "text": "Sydney"      , "continent": "Australia" });
-            elt.tagsinput('add', { "value": 10, "text": "Beijing"     , "continent": "Asia"      });
-            elt.tagsinput('add', { "value": 13, "text": "Cairo"       , "continent": "Africa"    });
-            console.log(elt.val());
+        $(function () {
+            var tickets = getTickets(10);
+            var ticketsHTML = [];
+            for(var i = 0; i<tickets.length; i++){
+                var ticket = tickets[i];
+                ticketsHTML.push('<div class="col-4">'+ ticket.ticketNo +'</div><div class="col-4">'+ ticket.category +'</div><div class="col-4">'+ ticket.dueNumber +'</div>');
+            }
+            $('#ticketlist').html(ticketsHTML.join(''));
+
+            $('#ruleside').append('<input id="taginput" />');
+            var elt = $('#ruleside #taginput');
+            var items = [];
+            items.push({text:"first tag",value:39,classlist:"bg-red"});
+            tagsinputLoad(elt, items)
             //http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/examples/
         });
     </script>
