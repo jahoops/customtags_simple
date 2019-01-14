@@ -75,7 +75,6 @@
        */
       refresh: function() {
         var self = this;
-        console.log('refresh')
       },
   
       /**
@@ -101,7 +100,7 @@
           self.$element.trigger('change');
       },
 
-      runRules(tickets) {
+      runRules: function(tickets) {
         if(!ticket || !$.isArray(tickets)) return;
         
       }

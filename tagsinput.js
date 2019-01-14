@@ -702,19 +702,25 @@
   });
 })(window.jQuery);
 
-function tagsinputLoad(element, items) {
-  var elt = $(element);
-  elt.tagsinput({
-      tagClass: function(item) {
-        return item.classlist;
-      },
-      itemValue: 'value',
-      itemText: 'text'
+function tagsinputLoad(el, attr, tags) {
+  $(el).each(function(){
+    var self = this;
+    var t = $(this).attr(attr);
+    for (var i = 0; i < tags.length; i++) {
+      var tag = tags[i];
+      if(tag.ticket==t){
+        var __tag = $(self).siblings('.__tag').find('div');
+        __tag.tagsinput({
+          tagClass: function(x) {
+            return x.classlist;
+          },
+          itemValue: 'value',
+          itemText: 'text'
+        });
+        __tag.tagsinput('add', tag);
+      }
+    }
   });
-  for(var i=0; i<items.length; i++) {
-    var item = items[i];
-    elt.tagsinput('add', item);
-  }
 }
 
 function tagsinputDistinctWithCount(items, prop) {

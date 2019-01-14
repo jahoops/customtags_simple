@@ -3,16 +3,29 @@
 
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./pnotify/PNotifyBrightTheme.css">
     <link rel="stylesheet" href="tagsinput.css">
 </head>
 
 <body>
     <div class="container">
         <div class="row w-100 mb-4" id='main'>
-            <div class="d-flex flex-wrap col-6" id="ticketlist">
-            </div>
+            <table class="table col-6" id="ticketlist">
+                <thead>
+                    <tr>
+                        <th>Ticket #</th>
+                        <th>Tags</th>
+                        <th>Category</th>
+                        <th>Due Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                </thead>
+            </table>
             <div class="d-flex flex-wrap col-6" id="ruleside">
             </div>
         </div>
@@ -43,6 +56,8 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+    <script src="./pnotify/PNotify.js" type="text/javascript"></script>
+    <script src="./pnotify/PNotifyButtons.js" type="text/javascript"></script>
     <script src="ticketdata.js" type="text/javascript"></script>
     <script src="ticketrules.js" type="text/javascript"></script>
     <script src="tagsinput.js" type="text/javascript"></script>
@@ -52,15 +67,15 @@
             var ticketsHTML = [];
             for(var i = 0; i<tickets.length; i++){
                 var ticket = tickets[i];
-                ticketsHTML.push('<div class="col-4">'+ ticket.ticketNo +'</div><div class="col-4">'+ ticket.category +'</div><div class="col-4">'+ ticket.dueNumber +'</div>');
+                ticketsHTML.push('<tr><td tagticket="'+ ticket.ticketNo +'">'+ ticket.ticketNo +'</td><td class="__tag"><div></div></td><td>'+ ticket.category +'</td><td>'+ ticket.dueNumber +'</td></tr>');
             }
-            $('#ticketlist').html(ticketsHTML.join(''));
+            $('#ticketlist tbody').html(ticketsHTML.join(''));
 
             $('#ruleside').append('<input id="taginput" />');
-            var elt = $('#ruleside #taginput');
-            var items = [];
-            items.push({text:"first tag",value:39,classlist:"bg-red"});
-            tagsinputLoad(elt, items)
+            var tags = [];
+            tags.push({ticket:100004,text:"VIP",value:39,classlist:"bg-red"});
+            tagsinputLoad($('#ticketlist tbody td[tagticket]'), 'tagticket', tags)
+
             var ruleArray = [
                 {title:"Tag past due tickets",condition:[{if:"due date",is:"past due"},{if:"category",is:"DVD"}],response:[{then:"add tag {'PAST DUE'}",to:"ticket"},{then:"show notification {'PAST DUE'}",to:["me","123456"]}]}
             ];
@@ -68,6 +83,16 @@
             console.log(rules);
             rules.refresh();
             //http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/examples/
+
+            PNotify.success({
+                title: 'See Through Notice',
+                text: 'No one ever pays attention to me. Why should they? I\'m practically invisible.'
+            });
+            PNotify.success({
+                title: 'Success!',
+                text: 'That thing that you were trying to do worked.'
+            });
+           
         });
     </script>
 </body>
