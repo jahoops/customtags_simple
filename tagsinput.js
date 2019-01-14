@@ -615,7 +615,7 @@
       return results;
     }
   };
-
+  
   $.fn.tagsinput.Constructor = TagsInput;
 
   /**

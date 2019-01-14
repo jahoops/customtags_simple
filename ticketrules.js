@@ -32,6 +32,7 @@
       this.rulesArray = ruleData;
       this.options = $.extend({}, defaultOptions, options);
       this.isInit = false;
+      
     }
   
     TicketRules.prototype = {
@@ -74,6 +75,7 @@
        */
       refresh: function() {
         var self = this;
+        console.log('refresh')
       },
   
       /**
@@ -97,6 +99,11 @@
   
         if (self.options.triggerChange)
           self.$element.trigger('change');
+      },
+
+      runRules(tickets) {
+        if(!ticket || !$.isArray(tickets)) return;
+        
       }
     }
    
