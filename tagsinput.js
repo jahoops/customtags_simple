@@ -46,7 +46,7 @@
     this.itemsArray = [];
 
     this.$element = $(element);
-    this.$element.addClass('sr-only');
+    //this.$element.addClass('sr-only');
 
     this.isSelect = (element.tagName === 'SELECT');
     this.multiple = (this.isSelect && element.hasAttribute('multiple'));
@@ -94,22 +94,23 @@
         return;
 
       // If SELECT but not multiple, remove current tag
-      if (self.isSelect && !self.multiple && self.itemsArray.length > 0)
+      if (self.isSelect && !self.multiple && self.itemsArray.length > 0) {
         self.remove(self.itemsArray[0]);
+      }
 
-        if (self.objectItems && typeof item === "string"){
-          var inlineColorIndex = item.indexOf('.');
-          var color = 'bg-gray'; //default
-          if(inlineColorIndex>-1){
-            var legalColorArray = ["red","green","blue","black","brown","purple"];
-            var inlineColor = item.slice(inlineColorIndex + 1);
-            if(legalColorArray.indexOf(inlineColor)>-1) {
-              color = 'bg-' + inlineColor;
-              item = item.slice(0,inlineColorIndex); //remove .color from tag text
-            }
+      if (self.objectItems && typeof item === "string"){
+        var inlineColorIndex = item.indexOf('.');
+        var color = 'bg-gray'; //default
+        if(inlineColorIndex>-1){
+          var legalColorArray = ["red","green","blue","black","brown","purple"];
+          var inlineColor = item.slice(inlineColorIndex + 1);
+          if(legalColorArray.indexOf(inlineColor)>-1) {
+            color = 'bg-' + inlineColor;
+            item = item.slice(0,inlineColorIndex); //remove .color from tag text
           }
-          item = { value:item.toUpperCase(),text:item.toUpperCase(),classlist:color };
         }
+        item = { value:item.toUpperCase(),text:item.toUpperCase(),classlist:color };
+      }
       if (typeof item === "string" && this.$element[0].tagName === 'INPUT') {
         var delimiter = (self.options.delimiterRegex) ? self.options.delimiterRegex : self.options.delimiter;
         var items = item.split(delimiter);
@@ -717,7 +718,7 @@ function tagsinputLoad(el, attr, tags) {
           itemValue: 'value',
           itemText: 'text'
         });
-        __tag.tagsinput('add', tag);
+        __tag.tagsinput('add', tag.text);
       }
     }
   });

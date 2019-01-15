@@ -11,27 +11,27 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="row w-100 mb-4" id='main'>
-            <table class="table col-6" id="ticketlist">
+    <div class="container-flex m-4">
+        <div class="row mb-4" id='tagsmain'>
+            <ul class="col-2" id="taglist">
+            </ul>
+            <table class="table col-4" id="ticketlist">
                 <thead>
                     <tr>
-                        <th>Ticket #</th>
+                        <th>Tkt #</th>
                         <th>Tags</th>
                         <th>Category</th>
-                        <th>Due Date</th>
+                        <th>Due</th>
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
-                </thead>
             </table>
             <div class="d-flex flex-wrap col-6" id="ruleside">
             </div>
         </div>
         <div class="row mb-4">
             <div class="col text-center">
-                <a href="#" class="btn btn-lg btn-success" data-toggle="modal" data-target="#ruleModal">Add/Edit Rule</a>
             </div>
         </div>
     </div>
@@ -67,31 +67,30 @@
             var ticketsHTML = [];
             for(var i = 0; i<tickets.length; i++){
                 var ticket = tickets[i];
-                ticketsHTML.push('<tr><td tagticket="'+ ticket.ticketNo +'">'+ ticket.ticketNo +'</td><td class="__tag"><div></div></td><td>'+ ticket.category +'</td><td>'+ ticket.dueNumber +'</td></tr>');
+                ticketsHTML.push('<tr><td tagticket="'+ ticket.ticketNo +'">'+ ticket.ticketNo +'</td><td class="__tag"><div></div></td><td tagcat="' + ticket.category + '">'+ ticket.category +'</td><td tagdue="' + ticket.dueNumber + '">'+ ticket.dueNumber +'</td></tr>');
             }
             $('#ticketlist tbody').html(ticketsHTML.join(''));
 
-            $('#ruleside').append('<input id="taginput" />');
-            var tags = [];
-            tags.push({ticket:100004,text:"VIP",value:39,classlist:"bg-red"});
-            tagsinputLoad($('#ticketlist tbody td[tagticket]'), 'tagticket', tags)
+            // var tags = [];
+            // tags.push({ ticket:100004,text:"VIP.red",value:39 });
+            // tagsinputLoad($('#ticketlist tbody td[tagticket]'), 'tagticket', tags);
 
             var ruleArray = [
-                {title:"Tag past due tickets",condition:[{if:"due date",is:"past due"},{if:"category",is:"DVD"}],response:[{then:"add tag {'PAST DUE'}",to:"ticket"},{then:"show notification {'PAST DUE'}",to:["me","123456"]}]}
+                //{title:"Tag past due tickets",condition:[{if:"due date",is:"past due"},{if:"category",is:"DVD"}],response:[{then:"add tag {'PAST DUE'}",to:"ticket"},{then:"show notification {'PAST DUE'}",to:["me","123456"]}]}
             ];
             var rules = $.fn.ticketrules(ruleArray);
-            console.log(rules);
-            rules.refresh();
+            var el = $('#tagsmain #ruleside');
+            rules.ruleBuilder(el);
             //http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/examples/
 
-            PNotify.success({
-                title: 'See Through Notice',
-                text: 'No one ever pays attention to me. Why should they? I\'m practically invisible.'
-            });
-            PNotify.success({
-                title: 'Success!',
-                text: 'That thing that you were trying to do worked.'
-            });
+            // PNotify.success({
+            //     title: 'See Through Notice',
+            //     text: 'No one ever pays attention to me. Why should they? I\'m practically invisible.'
+            // });
+            // PNotify.success({
+            //     title: 'Success!',
+            //     text: 'That thing that you were trying to do worked.'
+            // });
            
         });
     </script>
