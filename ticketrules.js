@@ -13,6 +13,8 @@
       }
     };
   
+    var newRule = {};
+
     /**
      * Constructor function
      */
@@ -21,7 +23,6 @@
       this.rulesArray = ruleData;
       this.options = $.extend({}, defaultOptions, options);
       this.isInit = false;
-      
     }
   
     TicketRules.prototype = {
@@ -90,130 +91,116 @@
       },
 
       runRules: function(tickets) {
-        if(!ticket || !$.isArray(tickets)) return;
+        if(!ticket || !$.isSelectAry(tickets)) return;
         
       },
       ruleBuilder: function(el) {
         var self = this;
-        var forminfo = {
-          ifArray : [
+        var ruleInput = buildLabel('ruleInput','Title:','col-1 mb-4') + buildInput('ruleInput','col-11 mb-4');
+        var formInfo = {
+          ifSelectAry : [
             { if:"ticket number",is:["{number}"] },
             { if:"due date",is:["past due","tomorrow","in {number} days","past due {number} days"] },
             { if:"category",is:["DVD", "Mouse", "Notebook"] } 
           ],
-          thenArray : [
+          thenSelectAry : [
             { then:"add tag {text}",to: ["ticket"] },
             { then:"show notification {text}", to:["me","my team lead","other"] },
             { then:"email {text}", to:["me","my team lead","other"] },
             { then:"text {text}", to:["me","my team lead","other"] }
           ]
         };
-        var ifSelect = [];
-        ifSelect.push('<label class="col-1" for="ifArray">if</label><select class="form-control input-sm mx-1 col-5" id="ifArray">');
-        ifSelect.push('<option value=""></option>');
-        for (var i = 0; i < forminfo.ifArray.length; i++) {
-          var ifItem = forminfo.ifArray[i].if;
-          ifSelect.push('<option value="'+ifItem+'">'+ifItem+'</option>');
-        }
-        ifSelect.push('</select>');
-
-        var isSelect = [];
-        isSelect.push('<label class="col-1" for="isArray">is</label><select class="form-control input-sm mx-1 col" id="isArray">');
-        isSelect.push('<option value=""></option>');
-        isSelect.push('</select>');
-
-        var thenSelect = [];
-        thenSelect.push('<label class="col-1" for="thenArray">then</label><select class="form-control input-sm mx-1 col-5" id="thenArray">');
-        thenSelect.push('<option value=""></option>');
-        for (var i = 0; i < forminfo.thenArray.length; i++) {
-          var thenItem = forminfo.thenArray[i].then;
-          thenSelect.push('<option value="'+thenItem+'">'+thenItem+'</option>');
-        }
-        thenSelect.push('</select>');
-
-        var toSelect = [];
-        toSelect.push('<label class="col-1" for="toArray">to</label><select class="form-control input-sm mx-1 col" id="toArray">');
-        toSelect.push('<option value=""></option>');
-        toSelect.push('</select>');
-
-        el.html('<form class="form-inline m-4 col-12" style="height:1px"><div class="form-row m-1 w-100">' + ifSelect.join('') +  isSelect.join('') + '</div><div class="form-row m-1 w-100">' + thenSelect.join('') + toSelect.join('') +'</div></form><form class="form-inline m-4 col-12" id="constructRule" style="height:1px">...waiting</form> <a href="#" class="form-control w-50 btn btn-sm btn-success mx-auto" id="execRuleBtn">Execute Rule on ticket list</a>');
-        var ifAry = el.find('#ifArray');
-        var isAry = el.find('#isArray');
-        var thenAry = el.find('#thenArray');
-        var toAry = el.find('#toArray');
-        var execBtn = el.find('#execRuleBtn');
-        ifAry.on('change', function(){
-          isAry.empty();
-          isSelect = [];
-          isSelect.push('<option value=""></option>');
-          for (var i = 0; i < forminfo.ifArray.length; i++) {
-            var ifItem = forminfo.ifArray[i];
+        var ifSelect =  buildLabel('ifSelectEl','if') + buildSelect('ifSelectEl', formInfo.ifSelectAry.map(function(x){ return x.if; }));
+        var isSelect =  buildLabel('isSelectEl','is') + buildSelect('isSelectEl', []);
+        var thenSelect = buildLabel('thenSelectEl','then') + buildSelect('thenSelectEl', formInfo.thenSelectAry.map(function(x){ return x.then; }));
+        var toSelect = buildLabel('toSelectEl','to') + buildSelect('toSelectEl', []);
+        var formStart = '<form class="form-inline m-4 col-12" style="height:1px"><div class="form-row m-1 w-100">';
+        var formMid = '</div><div class="form-row m-1 w-100">';
+        var formEnd = '</div></form><form class="form-inline m-4 col-12" id="constructRule" style="height:1px">...waiting</form> <a href="#" class="form-control w-50 btn btn-sm btn-success mx-auto" id="execRuleBtn">Execute Rule on ticket list</a>';
+        el.html(formStart + ruleInput + ifSelect +  isSelect + formMid + thenSelect + toSelect + formEnd);
+        var ifSelectEl = el.find('#ifSelectEl');
+        var isSelectEl = el.find('#isSelectEl');
+        var thenSelectEl = el.find('#thenSelectEl');
+        var toSelectEl = el.find('#toSelectEl');
+        var execBtnEl = el.find('#execRuleBtn');
+        ifSelectEl.on('change', function(){
+          isSelectEl.empty();
+          var isOptions = [];
+          isOptions.push('<option value=""></option>');
+          for (var i = 0; i < formInfo.ifSelectAry.length; i++) {
+            var ifItem = formInfo.ifSelectAry[i];
             if(ifItem.if === $(this).val()){
               for (var j = 0; j < ifItem.is.length; j++) {
                 var isItem = ifItem.is[j];
-                isSelect.push('<option value="'+isItem+'">'+isItem+'</option>');
+                isOptions.push('<option value="'+isItem+'">'+isItem+'</option>');
               }
             }
           }
-          isAry.html(isSelect.join(''));
+          isSelectEl.html(isOptions.join(''));
           constructRule();
         });
-        isAry.on('change', function(){
+        isSelectEl.on('change', function(){
           constructRule();
         });
-        thenAry.on('change', function(){
-          toAry.empty();
-          toSelect = [];
-          toSelect.push('<option value=""></option>');
-          for (var i = 0; i < forminfo.thenArray.length; i++) {
-            var thenItem = forminfo.thenArray[i];
+        thenSelectEl.on('change', function(){
+          toSelectEl.empty();
+          var toOptions = [];
+          toOptions.push('<option value=""></option>');
+          for (var i = 0; i < formInfo.thenSelectAry.length; i++) {
+            var thenItem = formInfo.thenSelectAry[i];
             if(thenItem.then === $(this).val()){
               for (var j = 0; j < thenItem.to.length; j++) {
                 var toItem = thenItem.to[j];
-                toSelect.push('<option value="'+toItem+'">'+toItem+'</option>');
+                toOptions.push('<option value="'+toItem+'">'+toItem+'</option>');
               }
             }
           }
-          toAry.html(toSelect.join(''));
+          toSelectEl.html(toOptions.join(''));
           constructRule();
         });
-        toAry.on('change', function(){
+        toSelectEl.on('change', function(){
           constructRule();
         });
-        execBtn.on('click',function(){
-          var ifVal = $(this).closest('#ruleside').find('#ifArray').val();
-          var isVal = $(this).closest('#ruleside').find('#isArray').val();
-          var thenVal = $(this).closest('#ruleside').find('#thenArray').val();
-          var toVal = $(this).closest('#ruleside').find('#toArray').val();
-          var ifInput =  $('#ifInput').val() || '';
-          var isInput = $('#isInput').val() || '';
-          var thenInput =  $('#thenInput').val() || '';
-          var toInput = $('#toInput').val() || '';
-          if(!ifVal || !isVal || !thenVal || !toVal) return;
-          var r = {if:{val:ifVal,input:ifInput},is:{val:isVal,input:isInput},then:{val:thenVal,input:thenInput},to:{val:toVal,input:toInput}};
+        execBtnEl.on('click',function(){
+          var ruleInput = $('#ruleInput').val() || '';
+          newRule.title = ruleInput;
+          var iter = ['if', 'is', 'then', 'to'];
+          for (var i = 0; i < iter.length; i++) {
+            var it = iter[i];
+            for (var j = 0; j < newRule[it].length; j++) {
+              var r = newRule[it][j];
+              if(r.key) {
+                r.value = $('#' + it + 'Input' + r.key).val();
+              }
+              
+            }            
+          }
+
+          var r = $.extend({},newRule);
           self.rulesArray.push(r);
+
+          console.log(r); 
 
           $('#tagsmain #ticketlist td').each(function(){
             var condition = false;
-            if(r.if.val==='ticket number') {
-              var _is = r.is.input || r.is.val;
-              if($(this).attr('tagticket')==_is) {
+            if(r.if[0].value ==='ticket number') {
+              if($(this).attr('tagticket')==r.is[0].value) {
                 condition = true;
               }
             }
-            if(r.if.val==='due date') {
-              if($(this).attr('tagdue')==r.is.val) {
+            if(r.if[0].value ==='due date') {
+              if($(this).attr('tagdue')==r.is[0].value) {
                 condition = true;
               }
             }
-            if(r.if.val==='category') {
-              if($(this).attr('tagcat')==r.is.val) {
+            if(r.if[0].value ==='category') {
+              if($(this).attr('tagcat')==r.is[0].value) {
                 condition = true;
               }
             }
             if(condition) {
-              if(r.then.val==='add tag {text}') {
-                var tag = { ticket:$(this).siblings('[tagticket]').attr('tagticket'),text:r.then.input,value:0 };
+              var thenVal = r.then[0].value.trim();
+              if(thenVal === 'add tag' && r.then.length===2) {
                 var __tag = $(this).siblings('.__tag').find('div.bootstrap-tagsinput');
                 if(__tag.length<1) {
                   __tag = $(this).siblings('.__tag').find('div');
@@ -225,12 +212,12 @@
                     itemText: 'text'
                   });
                 }
-                __tag.tagsinput('add', tag.text);
+                __tag.tagsinput('add', r.then[1].value);
               }
-              if(thenVal==='show notification {text}') {
+              if(thenVal === 'show notification') {
                 PNotify.success({
-                  title: 'From Rules',
-                  text: r.then.input
+                  title: 'From ' + r.title,
+                  text: r.then[1].value
                 });
               }              
             }
@@ -274,60 +261,95 @@
             }
           });
         });
+        function getTokenBuilder(tokenString) {
+          var tokenBuilder = [];
+          var from = 0;
+          var pos = tokenString.indexOf('{',from);
+          while(pos > -1) {
+            var pos2 = tokenString.indexOf('}',pos);
+            if(pos2 > -1) {
+              var token = tokenString.slice(pos+1,pos2);
+              var _seg = 'segment' + from;
+              tokenBuilder.push({ key: false, value: tokenString.slice(from, pos) });
+              tokenBuilder.push({ key: tokenString.slice(pos+1,pos2),value: '' });
+              from = pos2 + 1;
+              pos = from < tokenString.length - 1 ? tokenString.indexOf('{',from) : -1;
+            } else {
+              from = pos;
+              break;
+            }
+          }
+          var last = from < tokenString.length - 1 ? tokenString.slice(from).trim() : false;
+          if(last) {
+            tokenBuilder.push({ key: false, value: tokenString.slice(from) });
+          }
+          return tokenBuilder;
+        }
         function constructRule() {
           var cr = el.find('#constructRule');
-          if(!cr) return;
-          var ifVal = el.find('#ifArray').val();
-          var isVal = el.find('#isArray').val();
-          var thenVal = el.find('#thenArray').val();
-          var toVal = el.find('#toArray').val();
-          var span = '<span class="m-1">';
+          if(!cr.length) return;
+
+          newRule = {if:[],is:[],then:[],to:[]};
+
+          var valAry = [];
+          valAry.push({ key:'if', value: el.find('#ifSelectEl').val() });
+          valAry.push({ key:'is', value: el.find('#isSelectEl').val() });
+          valAry.push({ key:'then', value: el.find('#thenSelectEl').val() });
+          valAry.push({ key:'to', value: el.find('#toSelectEl').val() });
+
           var crContent = [];
-          if(ifVal) {
-            var x = ifVal.indexOf('{text}');
-            if(x<0) {
-              x = ifVal.indexOf('{number}');
-            }
-            if(x>-1) {
-              crContent.push(span + 'if ' + ifVal.slice(0,x) + ' </span><input class="form-control input-sm" id="ifInput"></input>');
-            } else {
-              crContent.push(span + 'if ' + ifVal + ' </span>');
-            }
-          }
-          if(isVal) {
-            var x = isVal.indexOf('{text}');
-            if(x<0) {
-              x = isVal.indexOf('{number}');
-            }
-            if(x>-1) {
-              crContent.push(span + 'is ' + isVal.slice(0,x) + ' </span><input class="form-control input-sm" id="isInput"></input>');
-            } else {
-              crContent.push(span + 'is ' + isVal + ' </span>');
+          for (var v = 0; v < valAry.length; v++) {
+            var valItem = valAry[v];
+            var tokenBuilder = getTokenBuilder(valItem.value);
+            crContent.push(buildSpan(valItem.key,'m-1'));
+            for (var i = 0; i < tokenBuilder.length; i++) {
+              var token = tokenBuilder[i];
+              newRule[valItem.key].push(token);
+              if(token.key) {
+                crContent.push(buildInput(valItem.key + 'Input' + token.key, 'col-5'));
+              } else {
+                crContent.push(buildSpan(token.value,'m-1'));
+              }
             }
           }
-          if(thenVal) {
-            var x = thenVal.indexOf('{text}');
-            if(x<0) {
-              x = thenVal.indexOf('{number}');
-            }
-            if(x>-1) {
-              crContent.push(span + 'then ' + thenVal.slice(0,x) + ' </span><input class="form-control input-sm" id="thenInput"></input>');
-            } else {
-              crContent.push(span + 'then ' + thenVal + ' </span>');
-            }
+          cr.html(crContent.join(' '));
+          console.log(newRule)
+        }
+        function buildSpan(content, _class) {
+          var bs = [];
+          var c = _class ? _class : '';
+          bs.push('<span class="' + c + '">');
+          bs.push(content);
+          bs.push('</span>');
+          return bs.join('');
+        }
+        function buildInput(id,_class) {
+          var bi = [];
+          bi.push('<input class="' + _class + ' form-control input-sm" id="');
+          bi.push(id);
+          bi.push('"></input>');
+          return bi.join('');
+        }
+        function buildLabel(labelFor, content, _class) {
+          var bl = [];
+          var c = _class ? _class : 'col-1';
+          bl.push('<label class="' + c + '" for="#' + labelFor + '">');
+          bl.push(content);
+          bl.push('</label>');
+          return bl.join('');
+        }
+        function buildSelect(id, optionAry) {
+          var bs = [];
+          bs.push('<select class="form-control input-sm col-5" id="');
+          bs.push(id);
+          bs.push('">');
+          bs.push('<option value=""></option>');
+          for (var i = 0; i < optionAry.length; i++) {
+            var option = optionAry[i];
+            bs.push('<option value="'+option+'">'+option+'</option>');
           }
-          if(toVal) {
-            var x = toVal.indexOf('{text}');
-            if(x<0) {
-              x = toVal.indexOf('{number}');
-            }
-            if(x>-1) {
-              crContent.push(span + 'to ' + toVal.slice(0,x) + ' </span><input class="form-control input-sm" id="toInput"></input>');
-            } else {
-              crContent.push(span + 'to ' + toVal + ' </span>');
-            }
-          }
-          cr.html(crContent.join(''));
+          bs.push('</select>');
+          return bs.join('');
         }
       }
     };
