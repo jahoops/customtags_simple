@@ -114,9 +114,9 @@
         var isSelect =  buildLabel('isSelectEl','is') + buildSelect('isSelectEl', []);
         var thenSelect = buildLabel('thenSelectEl','then') + buildSelect('thenSelectEl', formInfo.thenSelectAry.map(function(x){ return x.then; }));
         var toSelect = buildLabel('toSelectEl','to') + buildSelect('toSelectEl', []);
-        var formStart = '<form class="form-inline m-4 col-12" style="height:1px"><div class="form-row m-1 w-100">';
-        var formMid = '</div><div class="form-row m-1 w-100">';
-        var formEnd = '</div></form><form class="form-inline m-4 col-12" id="constructRule" style="height:1px">...waiting</form> <a href="#" class="form-control w-50 btn btn-sm btn-success mx-auto" id="execRuleBtn">Execute Rule on ticket list</a>';
+        var formStart = '<div class="col-12"><div class="form-row m-1 w-100 text-center">';
+        var formMid = '</div><div class="form-row m-1 w-100 text-center">';
+        var formEnd = '</div></div><div class="form-row m-1 w-100 text-center" id="constructRule"><span class="m-auto">...waiting<span></div> <a href="#" class="form-control w-50 btn btn-sm btn-success mx-auto" id="execRuleBtn">Execute Rule on ticket list</a>';
         el.html(formStart + ruleInput + ifSelect +  isSelect + formMid + thenSelect + toSelect + formEnd);
         var ifSelectEl = el.find('#ifSelectEl');
         var isSelectEl = el.find('#isSelectEl');
@@ -286,7 +286,7 @@
           return tokenBuilder;
         }
         function constructRule() {
-          var cr = el.find('#constructRule');
+          var cr = el.find('#constructRule span');
           if(!cr.length) return;
 
           newRule = {if:[],is:[],then:[],to:[]};
@@ -306,7 +306,7 @@
               var token = tokenBuilder[i];
               newRule[valItem.key].push(token);
               if(token.key) {
-                crContent.push(buildInput(valItem.key + 'Input' + token.key, 'col-5'));
+                crContent.push(buildInput(valItem.key + 'Input' + token.key, 'col-5 d-inline'));
               } else {
                 crContent.push(buildSpan(token.value,'m-1'));
               }
