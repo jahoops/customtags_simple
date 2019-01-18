@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./pnotify/PNotifyBrightTheme.css">
+    <link rel="stylesheet" href="./forkawesome/css/fork-awesome.css">
     <link rel="stylesheet" href="tagsinput.css">
 </head>
 
@@ -84,15 +84,25 @@
             rules.ruleBuilder(el);
             //http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/examples/
 
-            // PNotify.success({
-            //     title: 'See Through Notice',
-            //     text: 'No one ever pays attention to me. Why should they? I\'m practically invisible.'
-            // });
-            // PNotify.success({
-            //     title: 'Success!',
-            //     text: 'That thing that you were trying to do worked.'
-            // });
-           
+            PNotify.info({
+                title: 'Info Notice',
+                text: 'No one ever pays attention to me.',
+                styling: 'bootstrap4',
+                icons: 'fontawesome4'
+            });
+            PNotify.success({
+                title: 'Success!',
+                text: 'That thing that you were trying to do worked.',
+                styling: 'bootstrap4',
+                icons: 'fontawesome4'
+            });
+            PNotify.notice({
+                title: 'Notification',
+                text: 'This doesn\'t close',
+                styling: 'bootstrap4',
+                icons: 'fontawesome4',
+                hide: false
+            })
         });
     </script>
 </body>

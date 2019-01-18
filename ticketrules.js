@@ -107,7 +107,7 @@
             { then:"add tag {text}",to: ["ticket"] },
             { then:"show notification {text}", to:["me","my team lead","other"] },
             { then:"email {text}", to:["me","my team lead","other"] },
-            { then:"text {text}", to:["me","my team lead","other"] }
+            { then:"sms text {text}", to:["me","my team lead","other"] }
           ]
         };
         var ifSelect =  buildLabel('ifSelectEl','if') + buildSelect('ifSelectEl', ruleSelect.ifSelectAry.map(function(x){ return x.if; }));
@@ -185,7 +185,7 @@
             var self = this;
             var condition = false;
             if(r.if[0].value ==='ticket number') {
-              if($(self).attr('tagticket')==r.is[0].value) {
+              if($(self).attr('tagticket')==r.is[1].value) {
                 condition = true;
               }
             }
@@ -213,9 +213,11 @@
                 __tagEl.tagsinput('add', r.then[1].value);
               }
               if(thenVal === 'show notification') {
-                PNotify.success({
-                  title: 'From ' + r.title,
-                  text: r.then[1].value
+                PNotify.alert({
+                  title: r.title,
+                  text: $(self).attr('tagticket') r.then[1].value,
+                  styling: 'bootstrap4',
+                  icons: 'fontawesome4'
                 });
               }              
             }
@@ -306,7 +308,9 @@
               if(token.key) {
                 crContent.push(buildInput(valItem.key + 'Input' + token.key, 'col-3 d-inline'));
               } else {
-                crContent.push(buildSpan(token.value,'m-1'));
+                if(token.value) {
+                  crContent.push(buildSpan(token.value,'m-1'));
+                }
               }
             }
           }
