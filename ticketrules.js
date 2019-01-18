@@ -97,7 +97,7 @@
       ruleBuilder: function(el) {
         var self = this;
         var ruleInput = buildLabel('ruleInput','Title:','col-1 mb-4') + buildInput('ruleInput','col-11 mb-4');
-        var formInfo = {
+        var ruleSelect = {
           ifSelectAry : [
             { if:"ticket number",is:["{number}"] },
             { if:"due date",is:["past due","tomorrow","in {number} days","past due {number} days"] },
@@ -110,9 +110,9 @@
             { then:"text {text}", to:["me","my team lead","other"] }
           ]
         };
-        var ifSelect =  buildLabel('ifSelectEl','if') + buildSelect('ifSelectEl', formInfo.ifSelectAry.map(function(x){ return x.if; }));
+        var ifSelect =  buildLabel('ifSelectEl','if') + buildSelect('ifSelectEl', ruleSelect.ifSelectAry.map(function(x){ return x.if; }));
         var isSelect =  buildLabel('isSelectEl','is') + buildSelect('isSelectEl', []);
-        var thenSelect = buildLabel('thenSelectEl','then') + buildSelect('thenSelectEl', formInfo.thenSelectAry.map(function(x){ return x.then; }));
+        var thenSelect = buildLabel('thenSelectEl','then') + buildSelect('thenSelectEl', ruleSelect.thenSelectAry.map(function(x){ return x.then; }));
         var toSelect = buildLabel('toSelectEl','to') + buildSelect('toSelectEl', []);
         var formStart = '<div class="col-12"><div class="form-row m-1 w-100 text-center">';
         var formMid = '</div><div class="form-row m-1 w-100 text-center">';
@@ -127,8 +127,8 @@
           isSelectEl.empty();
           var isOptions = [];
           isOptions.push('<option value=""></option>');
-          for (var i = 0; i < formInfo.ifSelectAry.length; i++) {
-            var ifItem = formInfo.ifSelectAry[i];
+          for (var i = 0; i < ruleSelect.ifSelectAry.length; i++) {
+            var ifItem = ruleSelect.ifSelectAry[i];
             if(ifItem.if === $(this).val()){
               for (var j = 0; j < ifItem.is.length; j++) {
                 var isItem = ifItem.is[j];
@@ -146,8 +146,8 @@
           toSelectEl.empty();
           var toOptions = [];
           toOptions.push('<option value=""></option>');
-          for (var i = 0; i < formInfo.thenSelectAry.length; i++) {
-            var thenItem = formInfo.thenSelectAry[i];
+          for (var i = 0; i < ruleSelect.thenSelectAry.length; i++) {
+            var thenItem = ruleSelect.thenSelectAry[i];
             if(thenItem.then === $(this).val()){
               for (var j = 0; j < thenItem.to.length; j++) {
                 var toItem = thenItem.to[j];
@@ -168,9 +168,9 @@
           for (var i = 0; i < iter.length; i++) {
             var it = iter[i];
             for (var j = 0; j < newRule[it].length; j++) {
-              var r = newRule[it][j];
-              if(r.key) {
-                r.value = $('#' + it + 'Input' + r.key).val();
+              var step = newRule[it][j];
+              if(step.key) {
+                step.value = $('#' + it + 'Input' + step.key).val();
               }
               
             }            
@@ -182,37 +182,35 @@
           console.log(r); 
 
           $('#tagsmain #ticketlist td').each(function(){
+            var self = this;
             var condition = false;
             if(r.if[0].value ==='ticket number') {
-              if($(this).attr('tagticket')==r.is[0].value) {
+              if($(self).attr('tagticket')==r.is[0].value) {
                 condition = true;
               }
             }
             if(r.if[0].value ==='due date') {
-              if($(this).attr('tagdue')==r.is[0].value) {
+              if($(self).attr('tagdue')==r.is[0].value) {
                 condition = true;
               }
             }
             if(r.if[0].value ==='category') {
-              if($(this).attr('tagcat')==r.is[0].value) {
+              if($(self).attr('tagcat')==r.is[0].value) {
                 condition = true;
               }
             }
             if(condition) {
               var thenVal = r.then[0].value.trim();
               if(thenVal === 'add tag' && r.then.length===2) {
-                var __tag = $(this).siblings('.__tag').find('div.bootstrap-tagsinput');
-                if(__tag.length<1) {
-                  __tag = $(this).siblings('.__tag').find('div');
-                  __tag.tagsinput({
-                    tagClass: function(x) {
-                      return x.classlist;
-                    },
-                    itemValue: 'value',
-                    itemText: 'text'
-                  });
-                }
-                __tag.tagsinput('add', r.then[1].value);
+                var __tagEl = $(self).closest('tr').find('.tags-col .tags-input');
+                __tagEl.tagsinput({
+                  tagClass: function(x) {
+                    return x.classlist;
+                  },
+                  itemValue: 'value',
+                  itemText: 'text'
+                });
+                __tagEl.tagsinput('add', r.then[1].value);
               }
               if(thenVal === 'show notification') {
                 PNotify.success({
@@ -306,7 +304,7 @@
               var token = tokenBuilder[i];
               newRule[valItem.key].push(token);
               if(token.key) {
-                crContent.push(buildInput(valItem.key + 'Input' + token.key, 'col-5 d-inline'));
+                crContent.push(buildInput(valItem.key + 'Input' + token.key, 'col-3 d-inline'));
               } else {
                 crContent.push(buildSpan(token.value,'m-1'));
               }

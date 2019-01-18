@@ -67,7 +67,7 @@
             var ticketsHTML = [];
             for(var i = 0; i<tickets.length; i++){
                 var ticket = tickets[i];
-                ticketsHTML.push('<tr><td tagticket="'+ ticket.ticketNo +'">'+ ticket.ticketNo +'</td><td class="__tag"><div></div></td><td tagcat="' + ticket.category + '">'+ ticket.category +'</td><td tagdue="' + ticket.dueNumber + '">'+ ticket.dueNumber +'</td></tr>');
+                ticketsHTML.push('<tr><td tagticket="'+ ticket.ticketNo +'">'+ ticket.ticketNo +'</td><td class="tags-col"><input class="tags-input" type="hidden"></input></td><td tagcat="' + ticket.category + '">'+ ticket.category +'</td><td tagdue="' + ticket.dueNumber + '">'+ ticket.dueNumber +'</td></tr>');
             }
             $('#ticketlist tbody').html(ticketsHTML.join(''));
 

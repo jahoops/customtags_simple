@@ -56,7 +56,7 @@
 
     this.$container = $('<div class="bootstrap-tagsinput"></div>');
     this.$input = $('<input type="text" placeholder="' + this.placeholderText + '"/>').appendTo(this.$container);
-
+    this.$input.attr('size',1);
     this.$element.before(this.$container);
 
     this.build(options);
