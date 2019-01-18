@@ -215,7 +215,7 @@
               if(thenVal === 'show notification') {
                 PNotify.alert({
                   title: r.title,
-                  text: $(self).attr('tagticket') r.then[1].value,
+                  text: '#' + $(self).closest('tr').find('[tagticket]').attr('tagticket') + ': ' + r.then[1].value,
                   styling: 'bootstrap4',
                   icons: 'fontawesome4'
                 });
